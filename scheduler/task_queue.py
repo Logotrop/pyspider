@@ -10,12 +10,12 @@ import heapq
 import Queue
 import logging
 import threading
-from UserDict import DictMixin
+from UserDict import DictMixin    #最小的一种字典，只实现了__getitem__ __setitem__ keys() 可以作为基类
 from token_bucket import Bucket
 
 
 class InQueueTask(DictMixin):
-    __slots__ = ('taskid', 'priority', 'exetime')
+    __slots__ = ('taskid', 'priority', 'exetime')     #slot 是用来固定一个类的实例能拥有的属性，这样他的实例就不需要再维护自己的dict，当此类使用量很大时可以极大地节省空间 http://jiajie999.github.io/python/2015/01/07/python-__slots__/
     __getitem__ = lambda *x: getattr(*x)
     __setitem__ = lambda *x: setattr(*x)
     keys = lambda self: self.__slots__
