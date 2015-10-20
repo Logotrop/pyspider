@@ -5,9 +5,12 @@
 #         http://binux.me
 # Created on 2014-02-08 22:37:13
 
+<<<<<<< HEAD
 '''
 每一个project是一个表，每一个task是一条记录
 '''
+=======
+>>>>>>> 939030a5c6ba13594c6d1d40c8ad7e89b00e2dc3
 
 import time
 import unittest

@@ -54,7 +54,7 @@ class PriorityTaskQueue(Queue.Queue):
 
     def _get(self, heappop=heapq.heappop):
         item = heappop(self.queue)
-        del self.queue_dict[item.taskid]
+        self.queue_dict.pop(item.taskid, None)
         return item
 
     @property
