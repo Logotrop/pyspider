@@ -14,6 +14,8 @@ except ImportError:
 class Bucket(object):
     '''
     traffic flow control with token bucket
+    令牌桶，用于控制速度
+    http://baike.baidu.com/view/956219.htm
     '''
 
     update_interval = 30

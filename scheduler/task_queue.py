@@ -16,7 +16,7 @@ from token_bucket import Bucket
 
 class InQueueTask(DictMixin):
     __slots__ = ('taskid', 'priority', 'exetime')     #slot 是用来固定一个类的实例能拥有的属性，这样他的实例就不需要再维护自己的dict，当此类使用量很大时可以极大地节省空间 http://jiajie999.github.io/python/2015/01/07/python-__slots__/
-    __getitem__ = lambda *x: getattr(*x)
+    __getitem__ = lambda *x: getattr(*x)    # TODO: 这里关注下，为什么要加*，可能是因为属性可以为非str
     __setitem__ = lambda *x: setattr(*x)
     keys = lambda self: self.__slots__
 
@@ -26,6 +26,10 @@ class InQueueTask(DictMixin):
         self.exetime = exetime
 
     def __cmp__(self, other):
+        '''
+        如果都没有开始执行，就按照优先级排序，优先级高在前
+        如果开始执行了，就看执行时间，少的在前
+        '''
         if self.exetime == 0 and other.exetime == 0:
             return -cmp(self.priority, other.priority)
         else:
