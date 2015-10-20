@@ -10,7 +10,12 @@ import time
 import Queue
 import logging
 from task_queue import TaskQueue
-
+'''
+调度器工作流程：
+1. 加载项目
+2. 对每个项目加载对应任务
+3. 死循环，每隔0.1秒更新项目，同时做了三个检查（这里没看懂request_fifo到底是什么）
+'''
 
 class Scheduler(object):
     _update_project_interval = 5*60
@@ -28,6 +33,9 @@ class Scheduler(object):
         self.task_queue = dict()
 
     def _load_projects(self):
+        '''
+        刷新projects列表
+        '''
         self.projects = dict()
         for project in self.projectdb.get_all():
             self.projects[project['name']] = project

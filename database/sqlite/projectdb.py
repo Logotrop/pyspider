@@ -40,6 +40,7 @@ class ProjectDB(BaseProjectDB, BaseDB):
         self._update(self.__tablename__, where="name = '%s'" % name, **obj)
 
     def get_all(self, fields=None):
+        #这句写的6
         what = ','.join(('`%s`' % x for x in fields)) if fields else '*'
         return self._select2dic(self.__tablename__, what=what)
 
