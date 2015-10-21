@@ -7,6 +7,10 @@
 
 from urllib import quote, unquote
 
+'''
+这里的dataurl目的貌似是为了处理二进制文件，比如图片
+'''
+
 def encode(data, mime_type='', charset='utf-8', base64=True):
     if isinstance(data, unicode):
         data = data.encode(charset)

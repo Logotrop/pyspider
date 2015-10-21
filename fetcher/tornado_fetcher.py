@@ -55,7 +55,8 @@ class Fetcher(object):
         self._quit = False
         self.proxy = proxy
         self.async = async
-        
+
+        #这里看来同步异步都一样，都使用mycurlasycnhttpclient
         if async:
             self.http_client = MyCurlAsyncHTTPClient(max_clients=self.poolsize)
         else:
@@ -73,7 +74,10 @@ class Fetcher(object):
             return self.http_fetch(url, task, callback)
 
     def data_fetch(self, url, task, callback):
-        self.on_fetch('data', task)
+        '''
+        所有的data:链接都不真抓取，只是做下记录，调用callback，所以貌似之前猜对了，dataurl encode就是为了处理二进制内容的
+        '''
+        self.on_fetch('data', task)  #TODO:好像是用来刷新什么时间的
         result = {}
         result['orig_url'] = url
         result['content'] = dataurl.decode(url)
@@ -90,6 +94,7 @@ class Fetcher(object):
         return task, result
 
     def http_fetch(self, url, task, callback):
+        #这几句写的挺好啊
         self.on_fetch('http', task)
         fetch = dict(self.default_options)
         fetch.setdefault('url', url)
@@ -138,7 +143,7 @@ class Fetcher(object):
             del fetch['cookies']
 
         def handle_response(response):
-            response.headers = final_headers
+            response.headers = final_headers  #TODO: 为什么用request的头覆盖到response？ 这个final_headers值从哪来的
             session.extract_cookies_to_jar(request, cookie_headers)
             if response.error and not isinstance(response.error, tornado.httpclient.HTTPError):
                 result = {'status_code': 599, 'error': "%r" % response.error,
@@ -178,13 +183,14 @@ class Fetcher(object):
         final_headers = tornado.httputil.HTTPHeaders()
         try:
             request = tornado.httpclient.HTTPRequest(header_callback=header_callback, **fetch)
+
             if cookie:
                 session.update(cookie)
                 request.headers.add('Cookie', self.session.get_cookie_header(request))
             if self.async:
                 response = self.http_client.fetch(request, handle_response)
             else:
-                return handle_response(self.http_client.fetch(request))
+                return handle_response(self.http_client.fetch(request))  # final_headers 只可能是这里变的了
         except Exception, e:
             result = {'status_code': 599, 'error': "%r" % e, 'time': time.time() - start_time,
                       'orig_url': url, 'url': url, }
