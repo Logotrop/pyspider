@@ -14,15 +14,17 @@ class TestTaskDB(unittest.TestCase):
     sample_task_http = {
             'taskid': 'taskid',
             'project': 'project',
-            'url': 'http://www.baidu.com',
+            'url': 'http://my.zzti.edu.cn/loginPortalUrl.portal',
             'fetch': {
-                'method': 'GET',
+                'method': 'POST',
                 'headers': {
-                    'Cookie': 'a=b', 
-                    'a': 'b'
+                    "User-Agent":'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36',
+                                               'Accept-Encoding':'gzip, deflate','Origin':'http://my.zzti.edu.cn',
+                                               'Content-Type':'application/x-www-form-urlencoded'
                     },
-                #'data': '',
+                'data':"userName=201100834224&password=280036",
                 'timeout': 60,
+                #'allow_redirects':False
                 },
             'process': {
                 'callback': 'callback',
@@ -30,10 +32,12 @@ class TestTaskDB(unittest.TestCase):
                 },
             }
     def test_http_get(self):
-        fetcher = Fetcher(None, None, async=False)
+        fetcher = Fetcher(None, None, proxy={'http':'127.0.0.1:8080'},async=False)
         def callback(type, task, result):
-            self.assertEqual(task, self.sample_task_http)
+            print result
+            print result['content']
+            #self.assertEqual(task, self.sample_task_http)
             #self.assertEqual(result['status_code'], 200)
-            self.assertEqual(result['orig_url'], self.sample_task_http["url"])
+            #self.assertEqual(result['orig_url'], self.sample_task_http["url"])
             #self.assertIn("a=b", result['content'])
         fetcher.fetch(self.sample_task_http, callback=callback)

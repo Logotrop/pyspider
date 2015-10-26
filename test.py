@@ -4,31 +4,35 @@
 #       tdifg.com
 #Create on 15/10/20
 
-from tornado.httpclient import HTTPClient,AsyncHTTPClient,HTTPRequest
+from tornado.httpclient import HTTPRequest
+from tornado.curl_httpclient import CurlAsyncHTTPClient
 from tornado.httputil import HTTPHeaders
 from tornado.ioloop import IOLoop
 
-def synchronous_fetch(url):
-    http_client = HTTPClient()
-
-    response = http_client.fetch(url)
-    return response
 
 #print synchronous_fetch("http://www.baidu.com")
 
-def printbody(body):
-    print body.body
+def printbody(rp):
+    print rp.headers
+    print rp.body
+    print rp.code
+    print rp.error
+    print rp.time_info
+
 
 def async_fetch(url):
-    http_client = AsyncHTTPClient()
-    if not isinstance(url,list):
-        url = [url]
-    for u in url:
-        http_client.fetch(u,printbody)
-    #IOLoop.instance().start()
+    http_client = CurlAsyncHTTPClient()
+    rq = HTTPRequest(url,method='POST',headers={"User-Agent":'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36',
+                                               'Accept-Encoding':'gzip, deflate','Origin':'http://www.douban.com',
+                                               'Content-Type':'application/x-www-form-urlencoded'},body="source=index_nav&form_email=ymmxza%40gmail.com&form_password=3jpnd%2442")
+    http_client.fetch(rq,callback=printbody)
+    IOLoop.instance().start()
+    http_client.close()
 
-#async_fetch('http://www.baidu.com')
 
+async_fetch('https://www.douban.com/accounts/login')
+
+'''
 headers= {
     'url':'http://www.baidu.com',
                 'method': 'GET',
@@ -59,6 +63,7 @@ async_fetch(rq)
 print 'asdf'
 
 asdf = 'asdfasdf'
+'''
 
 '''
 from UserDict import DictMixin

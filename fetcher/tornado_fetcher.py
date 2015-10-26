@@ -15,6 +15,8 @@ import tornado.httputil
 import tornado.httpclient
 from tornado.curl_httpclient import CurlAsyncHTTPClient
 from tornado.simple_httpclient import SimpleAsyncHTTPClient
+from tornado.httpclient import HTTPError
+
 from libs import dataurl, counter
 
 class MyCurlAsyncHTTPClient(CurlAsyncHTTPClient):
@@ -163,7 +165,13 @@ class Fetcher(object):
             del fetch['cookies']
 
         def handle_response(response):
-            response.headers = final_headers  #TODO: 为什么用request的头覆盖到response？ 这个final_headers值从哪来的
+            '''
+            这里处理返回包里的cookies同步到request，然后再调用真正的回调函数
+            :param response:
+            :return:
+            '''
+            #TODO: 302跳转 不是在这里执行的，也就是说，如果有302跳转，虽然Header处理了，但是没有加到request，所以无法处理这样的登录
+            response.headers = final_headers
             session.extract_cookies_to_jar(request, cookie_headers)
             if response.error and not isinstance(response.error, tornado.httpclient.HTTPError):
                 result = {'status_code': 599, 'error': "%r" % response.error,
@@ -210,6 +218,16 @@ class Fetcher(object):
             if self.async:
                 response = self.http_client.fetch(request, handle_response)
             else:
+                '''
+                加上这一段就可以处理302跳转时的登录了，不过follow_redirects要先设置为False
+                try:
+                    rp = self.http_client.fetch(request)
+                except HTTPError:
+                    session.extract_cookies_to_jar(request, cookie_headers)
+                    request.headers.add('Cookie',session.get_cookie_header(request))
+                    request.follow_redirects = True
+                    rp = self.http_client.fetch(request)
+                '''
                 return handle_response(self.http_client.fetch(request))  # final_headers 只可能是这里变的了
         except Exception, e:
             result = {'status_code': 599, 'error': "%r" % e, 'time': time.time() - start_time,
