@@ -5,6 +5,10 @@
 #         http://binux.me
 # Created on 2014-02-16 22:59:56
 
+'''
+fetcher有callback了 为啥要processor
+'''
+
 import sys
 import time
 import logging
