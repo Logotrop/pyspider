@@ -14,7 +14,7 @@ class TestTaskDB(unittest.TestCase):
     sample_task_http = {
             'taskid': 'taskid',
             'project': 'project',
-            'url': 'http://xxx',
+            'url': 'http://http.org/post',
             'fetch': {
                 'method': 'POST',
                 'headers': {
