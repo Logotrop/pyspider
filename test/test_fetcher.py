@@ -14,15 +14,15 @@ class TestTaskDB(unittest.TestCase):
     sample_task_http = {
             'taskid': 'taskid',
             'project': 'project',
-            'url': 'http://my.zzti.edu.cn/loginPortalUrl.portal',
+            'url': 'http://xxx',
             'fetch': {
                 'method': 'POST',
                 'headers': {
                     "User-Agent":'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36',
-                                               'Accept-Encoding':'gzip, deflate','Origin':'http://my.zzti.edu.cn',
+                                               'Accept-Encoding':'gzip, deflate','Origin':'http://xxx',
                                                'Content-Type':'application/x-www-form-urlencoded'
                     },
-                'data':"userName=201100834224&password=280036",
+                'data':"xxxxxxx",
                 'timeout': 60,
                 #'allow_redirects':False
                 },
@@ -32,7 +32,7 @@ class TestTaskDB(unittest.TestCase):
                 },
             }
     def test_http_get(self):
-        fetcher = Fetcher(None, None, proxy={'http':'127.0.0.1:8080'},async=False)
+        fetcher = Fetcher(None, None,async=False)
         def callback(type, task, result):
             print result
             print result['content']
