@@ -125,12 +125,13 @@ class BaseHandler(object):
             if isinstance(callback, basestring) and hasattr(self, callback):
                 func = getattr(self, callback)
             elif hasattr(callback, 'im_self') and callback.im_self is self:
+                #这个貌似是为了兼容老版python 意思和上一个一样，callback必须是类里的方法
                 func = callback
                 kwargs['callback'] = func.__name__
             else:
                 raise NotImplementedError("self.%s() not implemented!" % callback)
             if hasattr(func, '_config'):
-                for k, v in func._config.iteritems():
+                for k, v in func._config.iteritems(): #iteritems 方法就可以循环kv了啊 我去
                     kwargs.setdefault(k, v)
 
         if hasattr(self, 'crawl_config'):

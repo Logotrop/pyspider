@@ -101,7 +101,7 @@ def _build_url(url, _params):
 def quote_chinese(url, encodeing="utf-8"):
     if isinstance(url, unicode):
         return quote_chinese(url.encode("utf-8"))
-    res = [b if ord(b) < 128 else '%%%02X' % (ord(b)) for b in url]
+    res = [b if ord(b) < 128 else '%%%02X' % (ord(b)) for b in url]   #TODO
     return "".join(res)
 
 def xunlei_url_decode(url):
